@@ -1,1 +1,1 @@
-# -token-radar-01
+# token-radar-01
