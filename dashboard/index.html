@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Token Launch Radar — pre-token protocols, ranked by implied value</title>
+<link rel="stylesheet" href="app.css">
+<script src="../data.js"></script>
+<script src="app.js" defer></script>
+</head>
+<body>
+<main class="shell">
+<header class="top">
+<div>
+<p class="kicker">Token launch radar</p>
+<h1>Forty protocols with no token yet, ranked by what one would be worth.</h1>
+<p class="lede">A sealed DefiLlama snapshot from 14 November 2026 lists 758 protocols. Forty of them sit above a $50M TVL floor, record no token, and are not a wrapped or staked product of something that already trades. This board ranks those forty — plus 249 more pre-token protocols — by the implied value of a token they do not have yet. A second tab lists the tokens that already trade, at market value, for comparison.</p>
+</div>
+<dl class="facts" id="facts">
+<dt>Snapshot</dt><dd data-fact="as_of">14 November 2026</dd>
+<dt>Watchlist</dt><dd data-fact="watchlist">40 protocols</dd>
+<dt>Board</dt><dd data-fact="board">289 rows</dd>
+<dt>Top implied value</dt><dd data-fact="top">$1.5B</dd>
+<dt>Model</dt><dd data-fact="model">radar-2</dd>
+</dl>
+</header>
+
+<section class="method" aria-labelledby="method-h">
+<h2 id="method-h">How the value is worked out</h2>
+<p>Every implied value on this board follows one formula, from the snapshot's own figures:</p>
+<p class="formula">implied value = TVL × multiple × growth multiplier × maturity multiplier</p>
+<ul>
+<li><strong>Multiple.</strong> Protocols whose token already trades have a market-cap-to-TVL ratio. A pre-token protocol inherits the <em>median</em> ratio of its category — but only when that category has at least <strong>5</strong> traded protocols. With fewer, it inherits the <strong>global median of 0.1857</strong> across all 133 traded, non-CEX protocols. Ratios are winsorised to <strong>[0.02, 5.0]</strong> before any median is taken, so one outlier cannot set the price. A 0.25 fallback exists in the code but is unreachable while any traded protocol exists.</li>
+<li><strong>Growth multiplier.</strong> 1 + (7-day TVL change, clamped to <strong>[−60%, +120%]</strong>) × 0.5. A protocol with no 7-day figure gets 1.00.</li>
+<li><strong>Maturity multiplier.</strong> 0.6 + min(age in days, <strong>1095</strong>) / 1095 × 0.4. A protocol with no listed date is assumed to be <strong>365</strong> days old.</li>
+</ul>
+<p><strong>Read this honestly.</strong> An implied value is what a token <em>would</em> be worth if one were issued at the market's usual ratio for its category. It is <strong>not a prediction</strong> that a token will be issued, or when. The top of the board is still bridge- and wrapped-heavy, because bridges hold the most TVL; the rules say nothing about whether a bridge will ever launch a token. And <strong>more than 40% of rows use the global median</strong>, because their category has too few traded comps to trust — Risk Curators, the watchlist's largest category at 12 of 40, has only one traded comp, so every Risk Curator row is priced at the global 0.1857. Each protocol's detail view says plainly whether its multiple is its category median or the global median.</p>
+</section>
+
+<section class="board" aria-labelledby="board-h">
+<h2 id="board-h">The board</h2>
+<div class="tabs" role="tablist" aria-label="Board view">
+<button id="tab-pre" role="tab" aria-selected="true">Pre-token board</button>
+<button id="tab-live" role="tab" aria-selected="false">Live tokens, at market value</button>
+</div>
+<div class="controls" id="controls">
+<label>Search <input id="q" type="search" placeholder="protocol name or slug" autocomplete="off"></label>
+<label>Category <select id="cat"><option value="">All categories</option></select></label>
+<label>Sort by <select id="sort">
+<option value="rank">Rank</option>
+<option value="implied">Implied value</option>
+<option value="tvl">TVL</option>
+<option value="change">7-day change</option>
+<option value="age">Age</option>
+</select></label>
+<label class="check"><input id="watchonly" type="checkbox"> Watchlist only (40)</label>
+</div>
+<p class="count" id="count"></p>
+<div class="tablewrap"><table id="table">
+<thead><tr>
+<th scope="col">Rank</th><th scope="col">Protocol</th><th scope="col">Category</th>
+<th scope="col" class="num">TVL</th><th scope="col" class="num">7d</th><th scope="col" class="num">Age</th>
+<th scope="col" class="num">Multiple</th><th scope="col" class="num">Implied value</th>
+</tr></thead>
+<tbody id="rows"></tbody>
+</table></div>
+<p class="note">Implied values are model values, in US dollars. Live-token figures are market values — market cap and TVL as the snapshot records them — never mixed into the ranked board.</p>
+</section>
+
+<footer class="foot">
+<p>Source: DefiLlama protocol snapshot, 14 November 2026. Watchlist floor: $50M TVL. Model radar-2. Built for the make.fun token-launch-radar bounty.</p>
+</footer>
+</main>
+
+<dialog id="detail" aria-labelledby="detail-title">
+<button class="close" id="detail-close" aria-label="Close detail view">×</button>
+<div id="detail-body"></div>
+</dialog>
+</body>
+</html>
